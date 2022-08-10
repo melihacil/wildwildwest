@@ -8,7 +8,10 @@ public class PlayerMove : MonoBehaviour
     public float horizontalInput, verticalInput;
     public float maxVelocity = 3;
     public float currentSpeed = 0;
+    public float jumpForce = 1f;
     private Rigidbody2D playerRigidBody;
+
+    public bool jump;
     // Start is called before the first frame update
 
     private void Awake()
@@ -26,6 +29,10 @@ public class PlayerMove : MonoBehaviour
         //Horizontal a-d Vertical w-s
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
+        if (Input.GetKey(KeyCode.Space))
+            jump=  true;
+        else 
+            jump= false;
         CalculateSpeed();
     }
 
@@ -39,10 +46,13 @@ public class PlayerMove : MonoBehaviour
         {
             currentSpeed -= 1;
         }
+        else currentSpeed = 0;
         Mathf.Clamp(currentSpeed, 0, maxVelocity);
     }
     private void FixedUpdate()
     {
         playerRigidBody.velocity = new Vector2(currentSpeed, playerRigidBody.velocity.y); 
+        if (jump)
+            playerRigidBody.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
     }
 }
