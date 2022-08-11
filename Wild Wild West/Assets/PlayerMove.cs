@@ -6,7 +6,8 @@ public class PlayerMove : MonoBehaviour
 {
 
     public float horizontalInput, verticalInput;
-    private float maxVelocity = 3f;
+    [SerializeField]
+    private float maxVelocity = 5f;
     public float currentSpeed = 0f;
     private float acceleration = 10f;
     public float jumpForce = 1f;
@@ -65,13 +66,15 @@ public class PlayerMove : MonoBehaviour
         {
             currentSpeed += acceleration * Time.deltaTime;
         }
-        else 
+        else
         {
             //Accelerate => deaccelerate 
             currentSpeed -= acceleration * Time.deltaTime;
         }    
-        Mathf.Clamp(currentSpeed, 0, maxVelocity);
+        currentSpeed = Mathf.Clamp(currentSpeed, 0, maxVelocity);
+        //ClampSpeed();
     }
+
     private void FixedUpdate()
     {
         playerRigidBody.velocity = new Vector2(currentSpeed * moveDirection, playerRigidBody.velocity.y);
