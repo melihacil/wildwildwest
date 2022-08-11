@@ -14,10 +14,11 @@ public class PlayerMove : MonoBehaviour
     public float moveDirection = 1;
     private Rigidbody2D playerRigidBody;
 
-
+    public float rotationSpeed = 30f;
     public Vector2 movement;
     public bool jump;
-    public bool rotation = false;
+    public bool turnLeft = false;
+    public bool turnRight = false;
     // Start is called before the first frame update
 
     private void Awake()
@@ -29,6 +30,17 @@ public class PlayerMove : MonoBehaviour
         
     }
 
+
+    private void rotateLeft()
+    {
+        turnLeft = false;
+        transform.forward = transform.forward * -1;
+    }
+    private void rotateRight()
+    {
+        turnRight = false;
+        transform.forward = transform.forward * -1;
+    }
     // Update is called once per frame
     void Update()
     {
@@ -40,6 +52,21 @@ public class PlayerMove : MonoBehaviour
         else 
             jump= false;
         MovementFunction();
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            //Debug.Log("Player fired");
+            Debug.DrawRay(transform.position, transform.TransformDirection(Vector2.right) * 100f, Color.red);
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.TransformDirection(Vector2.right), 100f);
+            if (hit)
+            {
+                Debug.Log("Player hit " + hit.collider.gameObject.name);
+            }
+        }
+        //if (Input.)
+
+            //Raycast2dhit stores data
+            //Physics2d.Raycast 
     }
 
 
@@ -48,38 +75,23 @@ public class PlayerMove : MonoBehaviour
         CalculateSpeed();
         if (movement.x > 0)
         {
-            rotation = true;
-            rotateRight();
+            turnLeft = true;
+            if (turnRight)
+                rotateRight();
             if (moveDirection == -1)
                 currentSpeed = 0;
             moveDirection = 1;
         }
         else if (movement.x < 0)
         {
-
-            //if (transform.rotation.y != 180)
-            if (rotation)
+            turnRight = true;
+            if (turnLeft)
                 rotateLeft();
             if (moveDirection == 1)
                 currentSpeed = 0;
             moveDirection= -1;
         }
 
-    }
-
-
-    private void rotateLeft()
-    {
-        rotation = false;
-        //transform.Rotate(Vector3.forward * -90);
-        transform.Rotate(0, 180, 0);
-        //transform.rotation.y = 180;
-    }
-    private void rotateRight()
-    {
-        //transform.Rotate(Vector3.forward);
-        transform.Rotate(0, 180, 0);
-        //transform.rotation.y = 0;
     }
     private void CalculateSpeed()
     {
