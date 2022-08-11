@@ -6,11 +6,15 @@ public class PlayerMove : MonoBehaviour
 {
 
     public float horizontalInput, verticalInput;
-    public float maxVelocity = 3;
-    public float currentSpeed = 0;
+    private float maxVelocity = 3f;
+    public float currentSpeed = 0f;
+    private float acceleration = 10f;
     public float jumpForce = 1f;
+    public float moveDirection = 1;
     private Rigidbody2D playerRigidBody;
 
+
+    public Vector2 movement;
     public bool jump;
     // Start is called before the first frame update
 
@@ -27,31 +31,52 @@ public class PlayerMove : MonoBehaviour
     void Update()
     {
         //Horizontal a-d Vertical w-s
-        horizontalInput = Input.GetAxisRaw("Horizontal");
-        verticalInput = Input.GetAxisRaw("Vertical");
+        movement.x = Input.GetAxisRaw("Horizontal");
+        movement.y = Input.GetAxisRaw("Vertical");
         if (Input.GetKey(KeyCode.Space))
             jump=  true;
         else 
             jump= false;
+        MovementFunction();
+    }
+
+
+    private void MovementFunction()
+    {
         CalculateSpeed();
+        if (movement.x > 0)
+        {
+            if (moveDirection == -1)
+                currentSpeed = 0;
+            moveDirection = 1;
+        }
+        else if (movement.x < 0)
+        {
+            if (moveDirection == 1)
+                currentSpeed = 0;
+            moveDirection= -1;
+        }
+
     }
 
     private void CalculateSpeed()
     {
-        if (horizontalInput > 0)
+        if (Mathf.Abs(movement.x) > 0)
         {
-            currentSpeed += 1;
+            currentSpeed += acceleration * Time.deltaTime;
         }
-        else if (horizontalInput < 0)
+        else 
         {
-            currentSpeed -= 1;
-        }
-        else currentSpeed = 0;
+            //Accelerate => deaccelerate 
+            currentSpeed -= acceleration * Time.deltaTime;
+        }    
         Mathf.Clamp(currentSpeed, 0, maxVelocity);
     }
     private void FixedUpdate()
     {
-        playerRigidBody.velocity = new Vector2(currentSpeed, playerRigidBody.velocity.y); 
+        playerRigidBody.velocity = new Vector2(currentSpeed * moveDirection, playerRigidBody.velocity.y);
+        //playerRigidBody.velocity = (Vector2)transform.forward * currentSpeed * moveDirection * Time.fixedDeltaTime;
+        //playerRigidBody.velocity = currentSpeed * moveDirection * Time.fixedDeltaTime;
         if (jump)
             playerRigidBody.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
     }
