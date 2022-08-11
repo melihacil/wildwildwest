@@ -17,6 +17,7 @@ public class PlayerMove : MonoBehaviour
 
     public Vector2 movement;
     public bool jump;
+    public bool rotation = false;
     // Start is called before the first frame update
 
     private void Awake()
@@ -47,12 +48,18 @@ public class PlayerMove : MonoBehaviour
         CalculateSpeed();
         if (movement.x > 0)
         {
+            rotation = true;
+            rotateRight();
             if (moveDirection == -1)
                 currentSpeed = 0;
             moveDirection = 1;
         }
         else if (movement.x < 0)
         {
+
+            //if (transform.rotation.y != 180)
+            if (rotation)
+                rotateLeft();
             if (moveDirection == 1)
                 currentSpeed = 0;
             moveDirection= -1;
@@ -60,6 +67,20 @@ public class PlayerMove : MonoBehaviour
 
     }
 
+
+    private void rotateLeft()
+    {
+        rotation = false;
+        //transform.Rotate(Vector3.forward * -90);
+        transform.Rotate(0, 180, 0);
+        //transform.rotation.y = 180;
+    }
+    private void rotateRight()
+    {
+        //transform.Rotate(Vector3.forward);
+        transform.Rotate(0, 180, 0);
+        //transform.rotation.y = 0;
+    }
     private void CalculateSpeed()
     {
         if (Mathf.Abs(movement.x) > 0)
