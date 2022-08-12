@@ -10,27 +10,22 @@ public class PlayerMove : MonoBehaviour
     private float maxVelocity = 5f;
     public float currentSpeed = 0f;
     private float acceleration = 10f;
-    public float jumpForce = 1f;
+    public float jumpForce = 10f;
     public float moveDirection = 1;
     private Rigidbody2D playerRigidBody;
 
     public float rotationSpeed = 30f;
     public Vector2 movement;
-    public bool jump;
+    public bool jump = true;
     public bool turnLeft = false;
     public bool turnRight = false;
-    // Start is called before the first frame update
+
+    
 
     private void Awake()
     {
         playerRigidBody = GetComponent<Rigidbody2D>();
     }
-    void Start()
-    {
-        
-    }
-
-
     private void rotateLeft()
     {
         turnLeft = false;
@@ -47,10 +42,6 @@ public class PlayerMove : MonoBehaviour
         //Horizontal a-d Vertical w-s
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
-        if (Input.GetKey(KeyCode.Space))
-            jump=  true;
-        else 
-            jump= false;
         MovementFunction();
 
         if (Input.GetMouseButtonDown(0))
@@ -107,13 +98,21 @@ public class PlayerMove : MonoBehaviour
         currentSpeed = Mathf.Clamp(currentSpeed, 0, maxVelocity);
         //ClampSpeed();
     }
+    private void ResetJump()
+    {
+        jump = true;
+    }
 
     private void FixedUpdate()
     {
         playerRigidBody.velocity = new Vector2(currentSpeed * moveDirection, playerRigidBody.velocity.y);
         //playerRigidBody.velocity = (Vector2)transform.forward * currentSpeed * moveDirection * Time.fixedDeltaTime;
         //playerRigidBody.velocity = currentSpeed * moveDirection * Time.fixedDeltaTime;
-        if (jump)
+        if (Input.GetKey(KeyCode.Space) && jump)
+        {
             playerRigidBody.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
+            jump = false;
+            Invoke("ResetJump", 0.5f);
+        }
     }
 }
