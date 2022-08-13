@@ -5,7 +5,7 @@ using UnityEngine;
 public class EnemyAI : MonoBehaviour
 {
 
-    [Range(1, 15)]
+    [Range(15, 60)]
     [SerializeField]
     private float viewRadius = 11f;
     [SerializeField]
@@ -33,12 +33,17 @@ public class EnemyAI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+       if (Target != null)
+        {
+            //Debug.Log("Player Detected");
+            //Shoot 
+        }
     }
     private void DetectIfOutOfRange()
     {
         if (Target == null || Target.gameObject.activeSelf == false || Vector2.Distance(Target.transform.position, Target.transform.position) > viewRadius) 
         {
+            Debug.Log("Player out of range");
             Target = null;
         }
     }
@@ -64,5 +69,11 @@ public class EnemyAI : MonoBehaviour
         yield return new WaitForSeconds(detectionCheckDelay);
         DetectTarget();
         StartCoroutine(DetectionCourutine());
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, viewRadius);
     }
 }
