@@ -41,7 +41,7 @@ public class EnemyAI : MonoBehaviour
     }
     private void DetectIfOutOfRange()
     {
-        if (Target == null || Target.gameObject.activeSelf == false || Vector2.Distance(Target.transform.position, Target.transform.position) > viewRadius) 
+        if (Target == null || Vector2.Distance(Target.transform.position, Target.transform.position) > viewRadius) 
         {
             Debug.Log("Player out of range");
             Target = null;
@@ -52,6 +52,7 @@ public class EnemyAI : MonoBehaviour
         Collider2D collision = Physics2D.OverlapCircle(transform.position, viewRadius, playerLayerMask);
         if (collision != null)
         {
+            Debug.Log("Player detected");
             Target = collision.transform;
         }
     }
