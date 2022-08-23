@@ -35,13 +35,13 @@ public class EnemyAI : MonoBehaviour
     {
        if (Target != null)
         {
-            //Debug.Log("Player Detected");
+            Debug.Log("Player Detected");
             //Shoot 
         }
     }
     private void DetectIfOutOfRange()
     {
-        if (Target == null || Vector2.Distance(Target.transform.position, Target.transform.position) > viewRadius) 
+        if (Target == null || Vector2.Distance(transform.position, target.transform.position) > viewRadius) 
         {
             Debug.Log("Player out of range");
             Target = null;
